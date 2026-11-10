@@ -1,0 +1,4 @@
+<resources>
+    <!-- Mirrors DarkScadangersColors.background. -->
+    <color name="window_background">#151414</color>
+</resources>

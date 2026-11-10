@@ -1,0 +1,3 @@
+<!-- Retain the supplied notification asset as part of the complete icon set. -->
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:keep="@drawable/ic_stat_scan" />

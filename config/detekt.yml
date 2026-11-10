@@ -1,0 +1,16 @@
+build:
+  maxIssues: 0
+config:
+  validation: true
+naming:
+  FunctionNaming:
+    ignoreAnnotated: ['Composable']
+complexity:
+  LongParameterList:
+    ignoreDefaultParameters: true
+    # Composables receive state and event callbacks as parameters by design.
+    ignoreAnnotated: ['Composable']
+style:
+  UnusedPrivateMember:
+    # Preview functions are invoked by Android Studio tooling, not by code.
+    ignoreAnnotated: ['Preview', 'PreviewLightDark', 'PreviewFontScale', 'PreviewScreenSizes']

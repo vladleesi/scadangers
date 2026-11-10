@@ -1,0 +1,8 @@
+<resources>
+    <string name="network_title">Network</string>
+    <string name="network_protection_heading">Network protection</string>
+    <string name="network_protection_toggle">Protect network traffic</string>
+    <string name="network_protection_unavailable">Not available in this version. Network traffic isn\'t filtered or inspected.</string>
+    <string name="network_monitoring_title">Network monitoring isn\'t available</string>
+    <string name="network_monitoring_body">This version doesn\'t monitor connections or Wi-Fi security. No results are shown because nothing has been checked.</string>
+</resources>

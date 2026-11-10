@@ -1,0 +1,18 @@
+<resources>
+    <string name="settings_title">Settings</string>
+    <string name="settings_appearance_heading">Appearance</string>
+    <string name="settings_theme">Theme</string>
+    <string name="settings_theme_summary">Follows your device\'s light or dark setting.</string>
+    <string name="settings_system_default">System default</string>
+    <string name="settings_animations">Animations</string>
+    <string name="settings_animations_summary">Follows the system Remove animations setting. When it\'s on, progress indicators stop moving.</string>
+    <string name="settings_privacy_heading">Privacy</string>
+    <string name="settings_data_collection">Data collection</string>
+    <string name="settings_data_collection_value">Local app inventory</string>
+    <string name="settings_data_collection_summary">Installed-app metadata and findings are stored locally. No account, analytics, advertising or network requests.</string>
+    <string name="settings_backup">Backup and transfer</string>
+    <string name="settings_backup_value">Off</string>
+    <string name="settings_backup_summary">App data is excluded from Android backup and device-to-device transfer.</string>
+    <string name="settings_about_heading">About</string>
+    <string name="settings_version">Version</string>
+</resources>

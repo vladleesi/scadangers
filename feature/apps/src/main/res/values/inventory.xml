@@ -1,0 +1,32 @@
+<resources>
+    <string name="inventory_title">Installed app inventory</string>
+    <string name="inventory_scope">Visible apps in this Android user/profile only. Android 11+ filters package visibility; other users and work profiles are not scanned. After a saved scan, returning here refreshes changes. Review signals do not establish malware or safety.</string>
+    <string name="inventory_never">No completed scan. Start a scan to inspect visible apps.</string>
+    <string name="inventory_cancel">Cancel scan</string>
+    <string name="inventory_full_scan">Full app scan</string>
+    <string name="inventory_refresh">Refresh changes</string>
+    <string name="inventory_search">Search name or package</string>
+    <string name="inventory_sort">Sort</string>
+    <string name="inventory_type">App type</string>
+    <string name="inventory_risk">Review level</string>
+    <string name="inventory_source">Installation source</string>
+    <string name="inventory_empty">No matching apps. An empty or restricted inventory is not a clean security result.</string>
+    <string name="inventory_details">Open app details</string>
+    <string name="inventory_back">Back to apps</string>
+    <string name="inventory_details_scope">Saved observation, not live authorization. Granted permission flags do not establish effective AppOps access. Special capabilities may be declared but disabled.</string>
+    <string name="inventory_findings">Explainable findings</string>
+    <string name="inventory_permissions">Declared permissions and observed grants</string>
+    <string name="inventory_apks">APK and split metadata (paths only; contents not read)</string>
+    <string name="inventory_system_settings">Review in Android settings</string>
+    <string name="inventory_app_settings">App info and permissions</string>
+    <string name="inventory_overlay">Display over other apps</string>
+    <string name="inventory_install_sources">Install unknown apps</string>
+    <string name="inventory_write_settings">Modify system settings</string>
+    <string name="inventory_usage">Usage access</string>
+    <string name="inventory_accessibility">Accessibility services</string>
+    <string name="inventory_notifications">Notification access</string>
+    <string name="inventory_administrators">Device administrators</string>
+    <string name="inventory_all_files">All files access</string>
+    <string name="inventory_review_signal">Needs review</string>
+    <string name="inventory_information">Information</string>
+</resources>

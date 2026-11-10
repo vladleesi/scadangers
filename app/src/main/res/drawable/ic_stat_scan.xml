@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Notification small icon: must stay white/transparent -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <group
+        android:scaleX="0.031847"
+        android:scaleY="0.031847"
+        android:translateX="-8.0318"
+        android:translateY="-5.6274">
+        <path
+            android:pathData="M630 582L760.4 427.6A200 200 0 0 1 830 582Z"
+            android:fillColor="#FFFFFFFF"/>
+        <path
+            android:pathData="M590 582a40 40 0 1 0 80 0a40 40 0 1 0 -80 0Z"
+            android:fillColor="#FFFFFFFF"/>
+        <path
+            android:pathData="M508 295H433C386 295 348 334 348 381V444M761 295H832C878 295 910 334 910 381V444M348 661V732C348 779 386 812 432 812H482M910 661V732C910 779 872 812 827 812H774"
+            android:strokeWidth="66"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round"
+            android:strokeColor="#FFFFFFFF"/>
+    </group>
+</vector>

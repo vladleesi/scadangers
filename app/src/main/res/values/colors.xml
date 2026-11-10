@@ -1,0 +1,4 @@
+<resources>
+    <!-- Mirrors ScadangersColors.background so the window matches the first Compose frame. -->
+    <color name="window_background">#FAF9F7</color>
+</resources>

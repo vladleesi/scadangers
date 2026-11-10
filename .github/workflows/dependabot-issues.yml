@@ -1,0 +1,41 @@
+name: Dependabot issue reporting
+on:
+  schedule:
+    - cron: '23 12 * * 1'
+  workflow_dispatch:
+permissions:
+  issues: write
+  vulnerability-alerts: read
+concurrency:
+  group: dependabot-issues
+  cancel-in-progress: false
+jobs:
+  report:
+    if: github.repository == 'vladleesi/scadangers'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Track open Dependabot alerts
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          endpoint="repos/$GITHUB_REPOSITORY"
+          has_alerts=$(gh api --method GET "$endpoint/dependabot/alerts" -f state=open -F per_page=1 --jq 'length > 0')
+          issues=$(gh api --paginate "$endpoint/issues?state=open&per_page=100" --jq '
+            .[] | select(
+              (.pull_request | not) and
+              .user.login == "github-actions[bot]" and
+              ((.body // "") | contains("<!-- scadangers-dependabot-alerts -->"))
+            ) | .number
+          ')
+
+          if [[ "$has_alerts" == true && -z "$issues" ]]; then
+            body=$(printf 'Review the open [Dependabot alerts](%s/%s/security/dependabot) in the repository security tab.\n\n<!-- scadangers-dependabot-alerts -->' "$GITHUB_SERVER_URL" "$GITHUB_REPOSITORY")
+            gh api --method POST "$endpoint/issues" -f title='Review Dependabot alerts' -f body="$body" --jq .html_url
+          elif [[ "$has_alerts" == false && -n "$issues" ]]; then
+            while IFS= read -r issue; do
+              gh api --method PATCH "$endpoint/issues/$issue" -f state=closed -f state_reason=completed --jq .html_url
+            done <<< "$issues"
+          fi

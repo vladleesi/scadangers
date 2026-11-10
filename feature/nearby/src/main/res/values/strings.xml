@@ -1,0 +1,5 @@
+<resources>
+    <string name="nearby_title">Nearby</string>
+    <string name="nearby_unavailable_title">Nearby scanning isn\'t available</string>
+    <string name="nearby_unavailable_body">This version doesn\'t scan for nearby Bluetooth or Wi-Fi devices. Optional access can be prepared below. No results are shown because nothing has been scanned.</string>
+</resources>

@@ -1,0 +1,5 @@
+<resources>
+    <string name="alerts_title">Alerts</string>
+    <string name="alerts_empty_title">No alerts to show</string>
+    <string name="alerts_empty_body">Alert collection isn\'t available in this version. An empty list doesn\'t mean the device is safe.</string>
+</resources>

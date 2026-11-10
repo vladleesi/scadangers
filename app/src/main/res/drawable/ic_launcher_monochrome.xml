@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Themed icon layer (Android 13+): alpha-only, system applies the tint -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group
+        android:scaleX="0.076000"
+        android:scaleY="0.076000"
+        android:translateX="6.1960"
+        android:translateY="6.9340">
+        <path
+            android:pathData="M396 580a234 234 0 1 0 468 0a234 234 0 1 0 -468 0Z"
+            android:fillColor="#FF000000"
+            android:fillAlpha="0.14"/>
+        <path
+            android:pathData="M473 580a157 157 0 1 0 314 0a157 157 0 1 0 -314 0Z"
+            android:fillColor="#FF000000"
+            android:fillAlpha="0.14"/>
+        <path
+            android:pathData="M628 971C680 903 716 879 795 879C883 879 944 960 974 1041C1016 1010 1082 1009 1140 1050L1500 1050L1500 1700L643 1700Z"
+            android:fillColor="#FF000000"
+            android:fillAlpha="0.38"/>
+        <path
+            android:pathData="M-600 1120L95 807C174 766 251 772 313 808C366 841 398 889 422 931C475 911 531 915 584 938C654 968 709 1027 751 1058C826 1042 892 1087 957 1161L970 1700L-600 1700Z"
+            android:fillColor="#FF000000"/>
+        <path
+            android:pathData="M630 582L782 402A233 233 0 0 1 862 582Z">
+            <aapt:attr name="android:fillColor">
+                <gradient android:type="linear" android:startX="711.6" android:startY="402" android:endX="851.4" android:endY="582">
+                    <item android:offset="0" android:color="#FF000000"/>
+                    <item android:offset="0.55" android:color="#D9000000"/>
+                    <item android:offset="1" android:color="#1F000000"/>
+                </gradient>
+            </aapt:attr>
+        </path>
+        <path
+            android:pathData="M603 582a27 27 0 1 0 54 0a27 27 0 1 0 -54 0Z"
+            android:fillColor="#FF000000"/>
+        <path
+            android:pathData="M508 295H433C386 295 348 334 348 381V444M761 295H832C878 295 910 334 910 381V444M348 661V732C348 779 386 812 432 812H482M910 661V732C910 779 872 812 827 812H774"
+            android:strokeWidth="42"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round"
+            android:strokeColor="#FF000000"/>
+    </group>
+</vector>

@@ -1,0 +1,14 @@
+<resources>
+    <string name="device_title">Device</string>
+    <string name="device_reported_heading">Reported by the system</string>
+    <string name="device_label_manufacturer">Manufacturer</string>
+    <string name="device_label_model">Model</string>
+    <string name="device_label_android_version">Android version</string>
+    <string name="device_android_version_value">%1$s (API %2$d)</string>
+    <string name="device_api_level_value">API %1$d</string>
+    <string name="device_label_security_patch">Security patch level</string>
+    <string name="device_value_not_reported">Not reported</string>
+    <string name="device_assessment_heading">Device assessment</string>
+    <string name="device_assessment_label">Device checks</string>
+    <string name="device_assessment_unavailable">Device checks aren\'t available in this version. The details above are reported by the system and haven\'t been verified.</string>
+</resources>
