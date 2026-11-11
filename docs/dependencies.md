@@ -19,7 +19,7 @@ preview Android libraries or dynamic selectors. No minSdk overrides are permitte
 | Coroutines / Serialization runtime | 1.11.0 / 1.12.0 |
 | Room | 2.8.5, maintained stable Room 2 line; version 1 local app inventory schema; KSP exports schemas |
 | DataStore | 1.3.0, preferences dependency in app; one lazy instance for onboarding/access history |
-| Tests | JUnit 4.13.2; AndroidX runner/core 1.7.0 and ext JUnit 1.3.0 |
+| Tests | JUnit 4.13.2; AndroidX runner/core 1.7.0, ext JUnit 1.3.0 and Espresso core 3.7.0 |
 | Static analysis | Stable Detekt 1.23.8 and KtLint CLI 1.8.0 (shadowed CLI variant) in isolated Java processes |
 | Fonts / icons | Platform fonts and Material Icons path data (Apache 2.0); user-supplied exact Android brand icon package, see [design system](design-system.md#brand-icon-resources). No image-loading dependency |
 
@@ -31,11 +31,10 @@ ignore those unknown permission names. They do not alter the minimum or target S
 Detekt's older embedded Kotlin compiler is isolated from the application compiler;
 analysis uses syntax rules without type resolution. Reassess for newer language syntax.
 
-Published release documentation establishes the candidate compatibility set. Full
-artifact, manifest-minSdk, compiler-plugin and R8 compatibility still require a
-successful Gradle build. Local debug/release builds, JVM tests and API 31 instrumentation
-now pass; lint and the license audit still fail (see [validation](validation.md)). Do
-not treat these pins as a verified production combination until CI passes.
+Published release documentation establishes the candidate compatibility set. Release
+validation requires successful builds, static checks, dependency auditing and runtime
+tests on both CI platform versions. See [validation](validation.md) for executed checks
+and remaining runtime coverage limits.
 
 DataStore moved from the unused settings dependency into `app` for real durable
 onboarding state. `core:security` uses the already pinned Coroutines runtime for
@@ -103,3 +102,11 @@ before using that reviewed record; unknown versions and checksum/service failure
 still fail. The report includes this provenance. The upstream copyright and full
 Apache license are bundled in
 [the APK asset](../app/src/main/assets/third-party/javax.inject-1-NOTICE.txt).
+
+Instrumentation explicitly pins stable Espresso core 3.7.0 in the version catalog.
+Compose UI test's transitive Espresso 3.5.0 calls reflective InputManager.getInstance,
+which is unavailable on API 37 and prevents UI tests from starting. Espresso 3.7.0
+uses getSystemService instead, supports minSdk 21 and aligns with the existing
+AndroidX Test runner/core 1.7.0 and ext JUnit 1.3.0. This is an androidTest dependency
+only; no application runtime dependency or platform SDK level changes. The release
+and compatibility details are in the [official AndroidX Test release notes](https://developer.android.com/jetpack/androidx/releases/test#espresso-3.7.0).

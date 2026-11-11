@@ -29,6 +29,10 @@
 
 ### Fixed
 
+- API 37 instrumentation uses stable Espresso 3.7.0, replacing the obsolete
+  reflective InputManager call in Compose's transitive Espresso 3.5.0.
+- `Android checks` skips when verification or instrumentation does not succeed;
+  publishing still requires successful upstream validation.
 - CI SDK setup no longer requests Google's removed `tools` package. Pull requests
   to `develop` run validation without publishing, and API 24 tests use an AOSP image
   without Google services.

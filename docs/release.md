@@ -6,6 +6,9 @@ and runs
 instrumentation on API 24 (AOSP, without Google services) and 37.0. Checks run with read access.
 SDK setup explicitly installs `platform-tools`; the deprecated `tools` package is no
 longer available. Pull-request checks cannot publish or promote a release.
+`Android checks` runs only after both verification and the entire instrumentation
+matrix succeed. An upstream failure, cancellation or skipped job skips this aggregate
+job; its dependent publish job stays skipped too.
 
 A push to `develop` in `vladleesi/scadangers` can promote the checked commit to `main`
 after every job succeeds. Git rejects a non-fast-forward update. The publish job skips

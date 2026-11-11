@@ -95,7 +95,7 @@ jobs:
           path: app/build/reports/androidTests/
   required:
     name: Android checks
-    if: always()
+    if: needs.verify.result == 'success' && needs.instrumentation.result == 'success'
     needs: [verify, instrumentation]
     runs-on: ubuntu-latest
     timeout-minutes: 2

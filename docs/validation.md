@@ -39,7 +39,8 @@ The complete required Gradle build passed:
 ## Runtime coverage and remaining limits
 
 All 42 instrumentation tests passed with zero failures/skips on the available API-31
-emulator. Coverage includes real public-API observations, 200% text, settings events,
+emulator with stable Espresso 3.7.0 (core and idling resource). Coverage includes
+real public-API observations, 200% text, settings events,
 app inventory, navigation, recreation and the shared design system. CI covers API 24 on an AOSP image without
 Google services and API 37.0. These remote jobs must pass before promotion; a local
 API-31 result does not verify those platform versions.
