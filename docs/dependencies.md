@@ -6,7 +6,7 @@ preview Android libraries or dynamic selectors. No minSdk overrides are permitte
 | Component | Version / decision |
 | --- | --- |
 | Android Gradle Plugin | 9.5.1; official API 37 support, minimum Gradle 9.6, JDK 17, Build Tools 36 |
-| Gradle | 9.8.2 wrapper with distribution SHA-256 |
+| Gradle | 9.9.1 wrapper with official distribution SHA-256; CI lint/version and security update |
 | Kotlin | 2.4.21; AGP built-in Kotlin, no duplicate Kotlin Android plugin |
 | Compose compiler / Serialization plugin | 2.4.21, aligned with Kotlin |
 | Compose UI/Foundation | 1.12.1, stable; explicit aligned versions |
@@ -84,3 +84,22 @@ Room 2.8 requires API 23 and therefore supports minSdk 24; see
 [official Room releases](https://developer.android.com/jetpack/androidx/releases/room).
 Full Gradle integration, packaging and R8 validation of this stage still require an
 unrestricted build environment (see [validation](validation.md)).
+
+Device posture adds no external runtime dependency. `core:security` now uses
+`core:common` device normalization, and `feature:device` uses security models. A shared
+design-system API constraint aligns transitive `lifecycle-runtime` with the existing
+2.11.0 app pin: standalone feature lint otherwise resolves 2.9.4 and fails loading its
+obsolete Lifecycle checks under AGP 9.5.1. No check is disabled or baselined. The current
+stable version is confirmed by the [official Lifecycle releases](https://developer.android.com/jetpack/androidx/releases/lifecycle).
+
+The wrapper moves to stable Gradle 9.9.1, above AGP 9.5.1's required minimum 9.6,
+with its official distribution checksum. See [release notes](https://docs.gradle.org/9.9.1/release-notes.html).
+The runtime audit retains fatal unknown-license, vulnerability and service failures.
+For `javax.inject:javax.inject:1` only, its POM omits the license: source headers from
+its exact Maven Central source archive establish Apache-2.0 (JSR-330 Expert Group,
+2009). Each audit verifies SHA-256
+`c4b87ee2911c139c3daf498a781967f1eb2e75bc1a8529a2e7b328a15d0e433e`
+before using that reviewed record; unknown versions and checksum/service failures
+still fail. The report includes this provenance. The upstream copyright and full
+Apache license are bundled in
+[the APK asset](../app/src/main/assets/third-party/javax.inject-1-NOTICE.txt).

@@ -3,7 +3,7 @@ plugins {
     alias(libs.plugins.ksp)
 }
 android {
-    namespace = "dev.scadangers.core.database"
+    namespace = "dev.vladleesi.scadangers.core.database"
 }
 dependencies {
     api(libs.room.runtime)

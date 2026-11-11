@@ -10,3 +10,9 @@ rules, serialized/cancellable scan orchestration and source/store boundaries. Th
 owns Android observations; the database module owns atomic Room persistence. No APK
 parsing, network intelligence, library CVE detection or malware verdict is implemented.
 See [scanner architecture](../../docs/architecture.md#installed-app-scanner).
+
+`device/` supplies deterministic device-posture evaluation, strict patch dates and the
+reviewed, incomplete offline ASB catalog. The app owns public Android observations;
+no Google service, exploit probe or automatic remediation is required. Severity and
+confidence are independent, and unknown applicability is explicit. See
+[posture architecture](../../docs/architecture.md#device-posture-assessment).

@@ -4,7 +4,7 @@
     <string name="overview_protection_active">Protection is active</string>
     <string name="overview_protection_not_active">Protection is not active</string>
     <string name="overview_protection_not_active_label">Not active</string>
-    <string name="overview_protection_no_modules">Installed-app review is available in Apps. Scadangers is not continuously monitoring or protecting this device.</string>
+    <string name="overview_protection_no_modules">Installed-app review is available in Apps and limited posture checks in This device → Details. Scadangers is not continuously monitoring or protecting this device.</string>
     <string name="overview_last_scan">Last full-device assessment</string>
     <string name="overview_last_scan_never">Never</string>
     <string name="overview_quick_scan">Quick scan</string>

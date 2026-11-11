@@ -4,6 +4,7 @@ Fails closed on missing metadata, unknown licenses, vulnerabilities or service e
 Only public dependency coordinates are sent; no application data is accessed.
 """
 import concurrent.futures
+import hashlib
 import json
 import re
 import sys
@@ -24,6 +25,17 @@ ALLOWED_LICENSES = {
     "The BSD 3-Clause License", "The BSD License",
 }
 NAMESPACE = {"m": "http://maven.apache.org/POM/4.0.0"}
+# This artifact's POM omits licenses. Reviewed source headers establish Apache-2.0;
+# the exact source artifact is verified on every audit, never inferred from its name.
+REVIEWED_SOURCE_LICENSES = {
+    "javax.inject:javax.inject:1": {
+        "license": "Apache-2.0",
+        "source_url": "https://repo.maven.apache.org/maven2/javax/inject/javax.inject/1/javax.inject-1-sources.jar",
+        "sha256": "c4b87ee2911c139c3daf498a781967f1eb2e75bc1a8529a2e7b328a15d0e433e",
+        "reviewed_on": "2026-11-11",
+        "reference": "https://github.com/javax-inject/javax-inject/blob/master/src/javax/inject/Inject.java",
+    },
+}
 
 
 def request(url, payload=None):
@@ -81,6 +93,12 @@ def licenses_for(coordinate, seen=None):
         return licenses
     if parent:
         return licenses_for(parent, seen)
+    if coordinate in REVIEWED_SOURCE_LICENSES:
+        provenance = REVIEWED_SOURCE_LICENSES[coordinate]
+        source_archive = request(provenance["source_url"])
+        if hashlib.sha256(source_archive).hexdigest() != provenance["sha256"]:
+            raise ValueError(f"Reviewed license source checksum mismatch for {coordinate}")
+        return [provenance["license"]]
     raise ValueError(f"Missing license metadata for {coordinate}")
 
 
@@ -104,7 +122,13 @@ def audit(items):
     for item, names in zip(items, license_results):
         if any(name not in ALLOWED_LICENSES for name in names):
             findings.append({"dependency": item, "unapproved_licenses": names})
-    return {"dependencies": dict(zip(items, license_results)), "findings": findings}
+    return {
+        "dependencies": dict(zip(items, license_results)),
+        "reviewed_source_licenses": {
+            item: REVIEWED_SOURCE_LICENSES[item] for item in items if item in REVIEWED_SOURCE_LICENSES
+        },
+        "findings": findings,
+    }
 
 
 def main():

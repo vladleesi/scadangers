@@ -44,7 +44,7 @@ requests nothing. All permissions can be skipped. No access request starts an en
 | Capability | API 24–28 | API 29–30 | API 31–32 | API 33–36 | API 37 | User action / limitations |
 | --- | --- | --- | --- | --- | --- | --- |
 | Installed-app visibility | No permission | No permission; filtering from 30 | Filtered | Filtered | Filtered | No runtime grant. No QUERY_ALL_PACKAGES; MAIN/LAUNCHER queries plus automatically visible packages support inventory in Apps. Current user/profile only. |
-| Device information | No permission | Same | Same | Same | Same | None. Existing system-reported Build facts only, not a privileged security assessment. |
+| Device information | No permission | Same | Same | Same | Same | No runtime prompt. Public posture indicators in Device; see the device posture contracts below. |
 | Notifications | App notification Settings | Same | Same | POST_NOTIFICATIONS runtime | Same | Consent on 33+; Settings recovery when blocked. App-level setting is checked at all supported API levels. Future channels must be checked separately. |
 | BLE scanning | COARSE_LOCATION runtime; BLUETOOTH + BLUETOOTH_ADMIN normal | FINE_LOCATION runtime; same normal permissions | BLUETOOTH_SCAN runtime | Same | Same | Runtime consent. Legacy location services must be enabled. BLE hardware is required. No connect/advertise permission; no physical location inference from BLE. neverForLocation can filter beacons. Radio state remains a future engine precondition. |
 | Wi-Fi scanning (start and read results) | COARSE_LOCATION runtime | FINE_LOCATION runtime | FINE_LOCATION runtime, request COARSE together | Same | Same | Runtime consent. ACCESS_WIFI_STATE + CHANGE_WIFI_STATE normal. Location services required from 28. Wi-Fi hardware required. This policy covers the complete foreground scan workflow; read-only APIs may have weaker older requirements. |
@@ -154,3 +154,44 @@ settings and managed-profile behavior. Direct API-37 compilation and JVM tests a
 cannot validate those runtime contracts. No app Baseline Profile generator exists;
 add scan/list/search/filter/detail/settings journeys when one is introduced and
 regenerate profiles before release. No responsiveness or battery benchmark is claimed.
+
+## Device posture contracts
+
+SDK levels remain min 24 / compile 37 / target 37. Build Tools remain 36.0.0 and JDK 17.
+No third-party runtime was added. The assessment uses API-24-compatible date parsing,
+not java.time APIs requiring desugaring or API 26. KeyguardManager.isDeviceSecure (23+),
+DevicePolicyManager.getStorageEncryptionStatus (11+, per-user code 24+) and the public
+Settings.Global.ADB_ENABLED key require no device-admin enrollment or privileged access.
+Unsupported/restricted indicators remain unknown. A device without secure-lock hardware
+is explicitly unsupported rather than reported protected. Encryption state refers only
+to the platform storage indicator and never verifies external media or key hardware.
+
+ConnectivityManager activeNetwork (23+), NetworkCapabilities and LinkProperties require
+normal ACCESS_NETWORK_STATE, which is the only added permission. Private DNS is guarded
+at API 28; older versions report unsupported. No default network, disappearing state or
+a network change during collection yields explicit unavailable observations. The app
+retains no addresses, SSIDs or proxy hostnames and sends no probe or discovery traffic.
+VPN/proxy presence is descriptive; absence never establishes compromise or protection.
+
+Security, wireless, developer and device-info Settings intents are public.
+The dedicated system-update action requires API 36.1; this app uses it on API 37+
+and opens device information as the supported update entry point on earlier versions.
+OEM update menus may require another user selection. The
+narrow intent queries permit resolution on API 30+. OEM/policy restrictions are handled
+at both resolution and launch, and the screen explains failures. Returning to Device
+reassesses current state. The OS handles all changes and confirmations.
+
+JVM tests cover policy and date behavior for every API from 24 through 37. Runtime tests
+must cover API 24, the API-28 Private DNS boundary and API 37, plus managed/OEM devices.
+CI's API-24 image runs without Google services to exercise the independent collector.
+Local runtime coverage and remaining gaps are recorded in [validation](validation.md).
+There is no application Baseline Profile generator. Add Device open, refresh, finding
+scroll and settings-return journeys when infrastructure is introduced, and regenerate
+profiles before release. No physical-device rendering, battery or memory claim is made.
+
+Public API references reviewed:
+[KeyguardManager](https://developer.android.com/reference/android/app/KeyguardManager#isDeviceSecure()),
+[DevicePolicyManager](https://developer.android.com/reference/android/app/admin/DevicePolicyManager#getStorageEncryptionStatus()),
+[LinkProperties](https://developer.android.com/reference/android/net/LinkProperties#isPrivateDnsActive()),
+[Settings.Global](https://developer.android.com/reference/android/provider/Settings.Global#ADB_ENABLED),
+[Settings intents](https://developer.android.com/reference/android/provider/Settings).

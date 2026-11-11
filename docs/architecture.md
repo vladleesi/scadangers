@@ -3,18 +3,19 @@
 ## Dependencies
 
 - `app` → feature modules, common, security, database, design system.
-- `feature:*` → design system; device also uses common for `DeviceProfile`, and apps uses
-  security inventory models. Features remain independent of each other.
+- `feature:*` → design system; device also uses common for `DeviceProfile`, and apps/device use
+  security assessment models. Features remain independent of each other.
 - `app` owns the Android capability adapter, Hilt access repository and lazy DataStore.
   Features receive access controls through composable slots, without Android checks.
 - `core:database` → Room with KSP, security models and serialization; version 1 stores
   per-package observations/results and completion metadata atomically.
 - `core:common`, `core:security`, `core:testing` → Kotlin/JVM, independent of Compose.
+  Security uses common device-profile normalization.
 - Features never depend on each other. The overview shows other features' summaries
   (network protection control, device table) through composable slots wired by `app`.
 - `core:testing` is a test dependency only.
 
-Installed-app inventory and local metadata evaluation are implemented. There is no
+Installed-app inventory, local metadata evaluation and limited device posture assessment are implemented. There is no
 backend, account, worker, app service or root integration. Permission and VPN
 authorization requests prepare optional access only; no radio scanning, traffic
 inspection or notification delivery is implemented.
@@ -33,10 +34,11 @@ navigation bars, top bar and content handle system and display-cutout insets.
 
 Device facts come from static `Build` properties read in `app` (no I/O, IPC or
 permission) and are normalized and bounded in `DeviceProfile`. They are descriptive,
-not an assessment. Apps shows visible package observations and explainable review
-signals. Other security features remain unavailable. `OverviewUiState.NoDeviceAssessment` does not
-aggregate app findings or claim a full-device assessment or continuous protection;
-open Apps for its last completed inventory.
+not an assessment by themselves. Opening Device also collects public platform indicators
+and evaluates selected offline Android Security Bulletin entries. Apps shows visible
+package observations and explainable review signals. Other security features remain unavailable. `OverviewUiState.NoDeviceAssessment` does not
+aggregate app/posture findings or claim a comprehensive device assessment or continuous
+protection; open Apps for its last completed inventory or Device for current posture.
 
 Stateless feature placeholders remain stateless. `AppsViewModel` owns installed-app
 scan events, read-only StateFlow, query/filter/sort state and saved detail selection.
@@ -113,7 +115,8 @@ There are no logs, uploads, APK payloads or custom cryptography. No MASVS compli
 malware detection efficacy or performance improvement is claimed.
 
 Tests cover capability and onboarding state, navigation, UI semantics, device facts,
-and platform policy. Installed-app tests add scan races, timeouts and cancellation,
+and platform policy. Device posture tests cover strict dates, patch claims, uncertainty, cancellation and deadlines.
+Installed-app tests add scan races, timeouts and cancellation,
 restricted inventories, signing evidence, persistence and large-list behavior. See
 [validation](validation.md) for executed and pending checks.
 
@@ -157,3 +160,46 @@ AppOps, active accessibility/device-admin/listener/VPN grants and other users/pr
 are not inferred from declarations. Every app states that vulnerability analysis has
 not run. No APK contents or library CVEs are analyzed. See the
 [API contracts](android-compatibility.md#installed-app-inventory).
+
+## Device posture assessment
+
+`core:security/device` owns immutable observations, independent severity/confidence/status,
+strict calendar dates, reviewed bulletin facts and deterministic evaluation. `app/device`
+owns the public Android collector, Hilt bindings, a destination-activated ViewModel,
+off-Main presentation preparation and settings launches. `feature:device` renders state
+and emits assessment/cancellation/settings events. No independent engine module is needed.
+
+Opening/resuming Device reads current-user screen-lock and storage-encryption indicators,
+USB debugging, default-network capabilities, Private DNS (28+), proxy presence and settings
+resolution. All platform IPC runs on IO. Evaluation and presentation run on an injected
+Default dispatcher. Collection is sequential, cancellable between calls and bounded by a
+10-second coroutine deadline; a synchronous Binder call cannot be interrupted mid-call.
+Navigation cancels running collection. No polling, service, new storage, Google dependency,
+network request, device identifier or sensitive network address is introduced. The only
+new permission is normal ACCESS_NETWORK_STATE. Narrow settings queries make availability
+checks work with package visibility filtering. Configuration changes require the user's
+interaction with Android Settings; there is no automatic remediation.
+
+The offline catalog is deliberately incomplete: six selected ASB rows from September 2017,
+September 2023 and November 2026, reviewed 2026-11-11. No AOSP row covers APIs 27–29.
+Dates and selected updated AOSP releases establish potential applicability or the OS's
+patch claim, never actual exploitability or independent patch verification. The MediaTek
+modem entry remains unknown without exact affected firmware information; manufacturer
+brand does not identify a vulnerable chipset. Unlisted releases are outside catalog
+coverage, not certified unaffected. Missing/invalid/future patch dates and failed reads
+remain unknown. Patch age over 90 days is an explicit local review policy, not a vendor
+support-end claim. Update support for exact model/region/carrier is unknown and requires
+manufacturer confirmation. Catalog changes require source review and an app release;
+there is no live update channel. Findings retain official references and detection time.
+
+Play Integrity may supply useful certified-device and optional Play Protect verdicts, but
+requires Google service availability, project enrollment and trusted server verification.
+This local app has no backend or credentials, so those signals are explicitly not evaluated
+on every device, including devices with Google services. Missing signals do not indicate
+compromise. No legacy SafetyNet integration or Google-package-presence heuristic is used.
+The app does not infer Verified Boot, bootloader state, root, malware, credential strength,
+external-storage encryption or hardware-backed keys from unrelated signals.
+
+Official sources: [ASB catalog](https://source.android.com/docs/security/bulletin),
+[Play Integrity verdicts](https://developer.android.com/google/play/integrity/verdicts),
+[standard request server verification](https://developer.android.com/google/play/integrity/standard).

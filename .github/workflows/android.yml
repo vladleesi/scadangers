@@ -1,11 +1,13 @@
 name: Android CI and release
 on:
+  pull_request:
+    branches: [develop]
   push:
     branches: [develop]
 permissions:
   contents: read
 concurrency:
-  group: android-develop
+  group: android-${{ github.ref }}
   cancel-in-progress: false
 jobs:
   verify:
@@ -32,6 +34,9 @@ jobs:
           distribution: temurin
           java-version: '17'
       - uses: android-actions/setup-android@v3
+        with:
+          # The deprecated SDK package 'tools' is no longer available from sdkmanager.
+          packages: platform-tools
       - run: sdkmanager 'platforms;android-37.0' 'build-tools;36.0.0'
       - uses: gradle/actions/setup-gradle@v4
       - run: ./gradlew :app:assembleDebug :app:assembleRelease test lint ktlintCheck detekt :app:assembleDebugAndroidTest :app:dependencyInventory --no-daemon
@@ -52,7 +57,7 @@ jobs:
       matrix:
         include:
           - api: '24'
-            target: google_apis
+            target: default
             ram: 2048M
           - api: '37.0'
             target: google_apis_ps16k
@@ -66,6 +71,8 @@ jobs:
           distribution: temurin
           java-version: '17'
       - uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
       - uses: gradle/actions/setup-gradle@v4
       - run: sdkmanager 'platforms;android-37.0' 'build-tools;36.0.0'
       - name: Enable KVM

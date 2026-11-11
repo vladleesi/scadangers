@@ -9,6 +9,15 @@
     <string name="device_label_security_patch">Security patch level</string>
     <string name="device_value_not_reported">Not reported</string>
     <string name="device_assessment_heading">Device assessment</string>
-    <string name="device_assessment_label">Device checks</string>
-    <string name="device_assessment_unavailable">Device checks aren\'t available in this version. The details above are reported by the system and haven\'t been verified.</string>
+    <string name="device_assessing">Reading observable device posture…</string>
+    <string name="device_assess">Assess device security</string>
+    <string name="device_cancel">Cancel assessment</string>
+    <string name="device_limitations">Scope and limitations</string>
+    <string name="device_scope">This assessment uses public Android APIs and selected offline Android Security Bulletin entries. It cannot prove overall safety, exploitability, malware absence or vendor support. No Google service is required. On older Android versions, Updates opens device information; follow the manufacturer\'s update menu.</string>
+    <string name="device_catalog">Bulletin catalog %1$s · Reviewed %2$s · Incomplete offline coverage</string>
+    <string name="device_findings">Platform security findings and device indicators</string>
+    <string name="device_evidence">Evidence: %1$s</string>
+    <string name="device_reference">Official reference: %1$s</string>
+    <string name="device_remediation">Recommended action: %1$s</string>
+    <string name="device_open_settings">Open %1$s settings</string>
 </resources>

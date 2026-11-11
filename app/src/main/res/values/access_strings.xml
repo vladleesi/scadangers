@@ -14,7 +14,7 @@
     <string name="access_apps">Installed-app visibility</string>
     <string name="access_apps_reason">App information supports local installed-app review. No runtime permission or Settings grant is available for package visibility. Android 11 and later filter which packages are visible; Scadangers queries launchable and automatically visible apps without broad package access. Other profiles are not scanned.</string>
     <string name="access_device">Device security information</string>
-    <string name="access_device_reason">Basic system-reported device facts work without permission or a user action. They do not establish device safety or provide privileged device information.</string>
+    <string name="access_device_reason">Open This device → Details for a limited, local security posture assessment. Public Android indicators and selected offline bulletins require no runtime permission or Google service. They do not establish overall device safety or provide privileged information.</string>
     <string name="access_notifications">Notifications</string>
     <string name="access_notifications_reason">Notification access would let a future alert feature notify you. Android 13 and later ask for runtime consent; older versions use app notification settings. Permission does not start monitoring. No alerts are generated in this version.</string>
     <string name="access_bluetooth">Bluetooth scanning access</string>

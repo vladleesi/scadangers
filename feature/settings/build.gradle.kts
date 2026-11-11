@@ -3,7 +3,7 @@ plugins {
     alias(libs.plugins.compose)
 }
 android {
-    namespace = "dev.scadangers.feature.settings"
+    namespace = "dev.vladleesi.scadangers.feature.settings"
     buildFeatures { compose = true }
 }
 dependencies {

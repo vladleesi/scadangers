@@ -3,7 +3,7 @@ plugins {
     alias(libs.plugins.compose)
 }
 android {
-    namespace = "dev.scadangers.feature.nearby"
+    namespace = "dev.vladleesi.scadangers.feature.nearby"
     buildFeatures { compose = true }
 }
 dependencies {

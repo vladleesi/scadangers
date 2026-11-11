@@ -9,14 +9,14 @@ plugins {
     alias(libs.plugins.hilt)
 }
 android {
-    namespace = "dev.scadangers"
+    namespace = "dev.vladleesi.scadangers"
     compileSdk = 37
     defaultConfig {
-        applicationId = "dev.scadangers"
+        applicationId = "dev.vladleesi.scadangers"
         minSdk = 24
         targetSdk = 37
-        versionCode = 1
-        versionName = "0.1.0"
+        versionCode = 2
+        versionName = "0.2.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
