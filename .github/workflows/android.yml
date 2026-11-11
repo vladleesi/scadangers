@@ -106,54 +106,112 @@ jobs:
           BUILD_RESULT: ${{ needs.verify.result }}
           DEVICE_RESULT: ${{ needs.instrumentation.result }}
         run: test "$BUILD_RESULT" = success && test "$DEVICE_RESULT" = success
-  publish:
+  promote:
     if: github.event_name == 'push' && github.ref == 'refs/heads/develop' && github.repository == 'vladleesi/scadangers'
-    needs: [verify, required]
+    needs: [required]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    outputs:
+      master_sha: ${{ steps.promotion.outputs.master_sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - name: Promote checked develop commit to master
+        id: promotion
+        shell: bash
+        run: |
+          tip=$(git ls-remote --exit-code origin refs/heads/develop | cut -f1)
+          if [[ "$tip" != "$GITHUB_SHA" ]]; then
+            echo "Develop has advanced; skipping stale promotion."
+            exit 0
+          fi
+          git push origin "$GITHUB_SHA:refs/heads/master"
+          master_sha=$(git ls-remote --exit-code origin refs/heads/master | cut -f1)
+          [[ "$master_sha" == "$GITHUB_SHA" ]] || { echo "Master changed during promotion" >&2; exit 1; }
+          echo "master_sha=$master_sha" >> "$GITHUB_OUTPUT"
+  release:
+    if: needs.promote.outputs.master_sha != ''
+    needs: [verify, promote]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
       contents: write
     env:
       RELEASE_TAG: ${{ needs.verify.outputs.release_tag }}
+      EXPECTED_MASTER_SHA: ${{ needs.promote.outputs.master_sha }}
+      RELEASE_NOTES_FILE: ${{ runner.temp }}/scadangers-release-notes.md
     steps:
-      - uses: actions/checkout@v4
+      - name: Check out master for release
+        uses: actions/checkout@v4
         with:
-          ref: ${{ github.sha }}
-      - name: Check develop tip
-        id: tip
+          ref: master
+          fetch-depth: 0
+      - name: Verify master release source
+        id: source
         shell: bash
         run: |
-          tip=$(git ls-remote --exit-code origin refs/heads/develop | cut -f1)
-          if [[ "$tip" == "$GITHUB_SHA" ]]; then
-            echo "current=true" >> "$GITHUB_OUTPUT"
+          [[ "$(git symbolic-ref --short HEAD)" == master ]] || { echo "Release checkout must be master" >&2; exit 1; }
+          master_sha=$(git rev-parse HEAD)
+          remote_sha=$(git ls-remote --exit-code origin refs/heads/master | cut -f1)
+          if [[ "$master_sha" != "$EXPECTED_MASTER_SHA" || "$remote_sha" != "$EXPECTED_MASTER_SHA" ]]; then
+            echo "Master has advanced; skipping stale release."
+            exit 0
           fi
-      - name: Check release tag
-        id: release
-        if: steps.tip.outputs.current == 'true'
+          version=$(sed -nE 's/^[[:space:]]*versionName = "([^"]+)"[[:space:]]*$/\1/p' app/build.gradle.kts)
+          [[ "$RELEASE_TAG" == "v$version" ]] || { echo "Master version does not match release tag" >&2; exit 1; }
+          echo "current=true" >> "$GITHUB_OUTPUT"
+          echo "master_sha=$master_sha" >> "$GITHUB_OUTPUT"
+      - name: Check master release tag
+        id: tag
+        if: steps.source.outputs.current == 'true'
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          if draft=$(gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --json isDraft --jq .isDraft 2>/dev/null); then
-            [[ "$draft" == false ]] || { echo "Review the existing draft for $RELEASE_TAG" >&2; exit 1; }
-            exit 0
-          fi
           ref="refs/tags/$RELEASE_TAG"
           tagged=$(git ls-remote --sort=refname origin "$ref" "${ref}^{}" | tail -n 1 | cut -f1)
-          if [[ -n "$tagged" && "$tagged" != "$GITHUB_SHA" ]]; then
-            echo "$RELEASE_TAG already points to a different commit" >&2
+          if [[ -n "$tagged" ]]; then
+            git fetch --no-tags origin "$ref"
+            git merge-base --is-ancestor "$tagged" HEAD || { echo "$RELEASE_TAG is outside master history" >&2; exit 1; }
+          fi
+          error_file=$(mktemp)
+          trap 'rm -f "$error_file"' EXIT
+          if draft=$(gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --json isDraft --jq .isDraft 2>"$error_file"); then
+            [[ "$draft" == false && -n "$tagged" ]] || { echo "Review the existing release for $RELEASE_TAG" >&2; exit 1; }
+            echo "update_notes=true" >> "$GITHUB_OUTPUT"
+            echo "notes_ref=$tagged" >> "$GITHUB_OUTPUT"
+            exit 0
+          elif ! grep -q 'release not found' "$error_file"; then
+            cat "$error_file" >&2
+            exit 1
+          fi
+          if [[ -n "$tagged" && "$tagged" != "$EXPECTED_MASTER_SHA" ]]; then
+            echo "$RELEASE_TAG already points to a different master commit" >&2
             exit 1
           fi
           echo "publish=true" >> "$GITHUB_OUTPUT"
           echo "create_tag=$([[ -z "$tagged" ]] && echo true || echo false)" >> "$GITHUB_OUTPUT"
-      - name: Fast-forward main
-        if: steps.tip.outputs.current == 'true'
-        run: git push origin "$GITHUB_SHA:refs/heads/main"
-      - name: Create version tag
-        if: steps.release.outputs.create_tag == 'true'
-        run: git push origin "$GITHUB_SHA:refs/tags/$RELEASE_TAG"
-      - name: Publish GitHub release
-        if: steps.release.outputs.publish == 'true'
+          echo "notes_ref=$EXPECTED_MASTER_SHA" >> "$GITHUB_OUTPUT"
+      - name: Prepare version changelog notes
+        if: steps.source.outputs.current == 'true'
+        env:
+          NOTES_REF: ${{ steps.tag.outputs.notes_ref }}
+        run: git show "$NOTES_REF:CHANGELOG.md" | python3 tools/release_notes.py "${RELEASE_TAG#v}" > "$RELEASE_NOTES_FILE"
+      - name: Create version tag from master
+        if: steps.tag.outputs.create_tag == 'true'
+        env:
+          MASTER_SHA: ${{ steps.source.outputs.master_sha }}
+        run: git push origin "$MASTER_SHA:refs/tags/$RELEASE_TAG"
+      - name: Publish GitHub release from master
+        if: steps.tag.outputs.publish == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --verify-tag --title "Scadangers ${RELEASE_TAG#v}" --generate-notes
+        run: gh release create "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --target master --verify-tag --title "Scadangers ${RELEASE_TAG#v}" --notes-file "$RELEASE_NOTES_FILE"
+      - name: Update existing release changelog description
+        if: steps.tag.outputs.update_notes == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release edit "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --notes-file "$RELEASE_NOTES_FILE"

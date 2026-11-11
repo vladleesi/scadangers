@@ -23,11 +23,15 @@ The complete required Gradle build passed:
   lint checks in standalone features. Package inventory deliberately accepts Android's
   filtered visibility; its narrow QueryPermissionsNeeded annotation documents this
   contract and does not add broad package access.
-- Nine Python audit tests passed, including exact source-license checksum validation,
-  tampering, unknown versions and service failure. The online runtime audit passed for
+- Fourteen Python tests passed, covering exact source-license checksum validation,
+  tampering, unknown versions, service failure and version-specific changelog notes. The online runtime audit passed for
   the current 150-coordinate inventory with zero findings. OSV coverage is incomplete
   and does not establish absence of vulnerabilities.
-- Workflow YAML parsed locally. SDK package availability was checked against Google's
+- Workflow YAML and Bash steps passed local syntax checks. Disposable Git-remote tests
+  cover master-only release source, fast-forward promotion, stale runs, tag conflicts,
+  retries, draft/API failures and descriptions from the exact tagged changelog. The live
+  master ruleset was applied through GitHub's API; no ruleset JSON change is included.
+  SDK package availability was checked against Google's
   repository metadata, including API-24 AOSP x86_64. PR validation cannot publish;
   develop pushes retain the existing checked-commit release process.
 - Merged release manifest: only the launcher activity is openly exported; the
