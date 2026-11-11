@@ -29,10 +29,10 @@
 
 ### Fixed
 
-- Successful develop checks automatically fast-forward `master`. Tags and releases
-  are created only from the verified promoted commit checked out from `master`.
+- Successful develop checks automatically fast-forward `main`. Tags and releases
+  are created only from the verified promoted commit checked out from `main`.
 - GitHub release descriptions use the matching changelog section. Existing releases
-  use the changelog at their immutable tag, verified to belong to master history.
+  use the changelog at their immutable tag, verified to belong to main history.
 - API 37 instrumentation uses stable Espresso 3.7.0, replacing the obsolete
   reflective InputManager call in Compose's transitive Espresso 3.5.0.
 - `Android checks` skips when verification or instrumentation does not succeed;

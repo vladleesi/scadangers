@@ -17,7 +17,7 @@ Build with JDK 17, Android SDK `platforms;android-37.0` and Build Tools `36.0.0`
 ```
 
 Current version: `0.2.0` (Android versionCode 2). See [releasing](docs/release.md) for the
-`develop` → `master` workflow and [Android compatibility](docs/android-compatibility.md)
+`develop` → `main` workflow and [Android compatibility](docs/android-compatibility.md)
 for scanner coverage.
 
 See [the changelog](CHANGELOG.md) for changes and [assessment architecture](docs/architecture.md#device-posture-assessment) for scope.
