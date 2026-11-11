@@ -142,7 +142,7 @@ jobs:
     env:
       RELEASE_TAG: ${{ needs.verify.outputs.release_tag }}
       EXPECTED_MASTER_SHA: ${{ needs.promote.outputs.master_sha }}
-      RELEASE_NOTES_FILE: ${{ runner.temp }}/scadangers-release-notes.md
+      RELEASE_NOTES_FILE: ${{ github.workspace }}/scadangers-release-notes.md
     steps:
       - name: Check out master for release
         uses: actions/checkout@v4

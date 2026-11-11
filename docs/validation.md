@@ -27,7 +27,8 @@ The complete required Gradle build passed:
   tampering, unknown versions, service failure and version-specific changelog notes. The online runtime audit passed for
   the current 150-coordinate inventory with zero findings. OSV coverage is incomplete
   and does not establish absence of vulnerabilities.
-- Workflow YAML and Bash steps passed local syntax checks. Disposable Git-remote tests
+- Workflow YAML, GitHub expression contexts (actionlint 1.7.12) and Bash steps passed
+  local validation. Disposable Git-remote tests
   cover master-only release source, fast-forward promotion, stale runs, tag conflicts,
   retries, draft/API failures and descriptions from the exact tagged changelog. The live
   master ruleset was applied through GitHub's API; no ruleset JSON change is included.
